@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Heart Rate Monitor</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: url('your-car-accident-image-url.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: Arial, sans-serif;
+      color: #333;
+      position: relative;
+      overflow: hidden; /* Prevent scrollbars */
+      transition: background-color 0.3s; /* Smooth transition for background color */
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: #ff4d4d;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1.2em;
+      border: none;
+      border-radius: 5px;
+      background-color: #ff4d4d;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 20px;
+    }
+    button:hover {
+      background-color: #ff1a1a;
+    }
+    p {
+      font-size: 1.5em;
+      margin-top: 20px;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    }
+    #heartRate {
+      font-weight: bold;
+      color: #28a745;
+    }
+    #message {
+      font-size: 1.5em;
+      margin-top: 15px;
+      color: #00796b;
+    }
+    #safetyMessage {
+      position: absolute;
+      bottom: 20px;
+      font-size: 1.5em;
+      color: #388e3c; /* Green for safe message */
+      display: none; /* Hidden by default */
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    }
+    .sparkle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      opacity: 0.8;
+      pointer-events: none; /* Prevent interactions */
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      0% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh);
+        opacity: 0;
+      }
+    }
+    @keyframes blink {
+      0% { background-color: rgba(255, 0, 0, 0.5); }
+      50% { background-color: rgba(255, 0, 0, 1); }
+      100% { background-color: rgba(255, 0, 0, 0.5); }
+    }
+    .blinking {
+      animation: blink 0.5s infinite; /* Blink effect */
+    }
+  </style>
+</head>
+<body>
+  <h1>Heart Rate Monitor</h1>
+  <button id="connectButton">Connect to Bluetooth Device</button>
+  <p>Heart Rate: <span id="heartRate">--</span> BPM</p>
+  <div id="message">Stay healthy!</div>
+  <div id="safetyMessage">You Are Safe!</div>
+
+<script>
+    const connectButton = document.getElementById('connectButton');
+    const heartRateDisplay = document.getElementById('heartRate');
+    const messageDisplay = document.getElementById('message');
+    const safetyMessageDisplay = document.getElementById('safetyMessage');
+    let lastHeartRate = null;
+
+    connectButton.addEventListener('click', async () => {
+      try {
+        const device = await navigator.bluetooth.requestDevice({
+          acceptAllDevices: true,
+          optionalServices: ['heart_rate']
+        });
+
+        const server = await device.gatt.connect();
+        const service = await server.getPrimaryService('heart_rate');
+        const characteristic = await service.getCharacteristic('heart_rate_measurement');
+
+        characteristic.addEventListener('characteristicvaluechanged', (event) => {
+          const value = event.target.value;
+          const flags = value.getUint8(0);
+          let heartRate;
+
+          // Check if heart rate is in 16-bit format (using second byte)
+          if (flags & 0x01) {
+            heartRate = value.getUint16(1, true); // Little-endian
+          } else {
+            heartRate = value.getUint8(1); // 8-bit heart rate
+          }
+
+          heartRateDisplay.textContent = heartRate;
+          updateMessage(heartRate);
+          
+          // Show safety message and handle background effects
+          if (heartRate >= 60 && heartRate <= 100) {
+            safetyMessageDisplay.style.display = 'block';
+            createFallingSparkles();
+            document.body.classList.remove('blinking'); // Remove blinking class
+          } else if (heartRate > 100) {
+            safetyMessageDisplay.style.display = 'none';
+            document.body.classList.add('blinking'); // Add blinking class for high BPM
+            stopSparkles();
+          } else {
+            safetyMessageDisplay.style.display = 'none';
+            document.body.classList.add('blinking'); // Add blinking class for low BPM
+            stopSparkles();
+          }
+        });
+
+        await characteristic.startNotifications();
+        heartRateDisplay.textContent = 'Connected, waiting for data...'; // Indicate waiting state
+      } catch {
+        heartRateDisplay.textContent = 'Failed to connect or retrieve data.';
+      }
+    });
+
+    function updateMessage(heartRate) {
+      if (heartRate < 60) {
+        messageDisplay.textContent = 'Consult nearest doctor.';
+        messageDisplay.style.color = '#d32f2f'; // Red for warning
+      } else if (heartRate >= 60 && heartRate <= 100) {
+        messageDisplay.textContent = 'Happy Journey!';
+        messageDisplay.style.color = '#388e3c'; // Green for normal
+      } else {
+        messageDisplay.textContent = 'Consult nearest doctor.';
+        messageDisplay.style.color = '#d32f2f'; // Red for warning
+      }
+    }
+
+    function createFallingSparkles() {
+      const colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FFD133']; // Multicolored sparkles
+      const sparkleCount = 5; // Number of sparkles falling at a time
+      
+      for (let i = 0; i < sparkleCount; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        sparkle.style.left = ${Math.random() * 100}vw;
+        sparkle.style.animationDuration = ${Math.random() * 2 + 2}s; // Vary the animation duration
+        document.body.appendChild(sparkle);
+        
+        // Remove sparkle after animation ends
+        sparkle.addEventListener('animationend', () => {
+          sparkle.remove();
+        });
+      }
+    }
+
+    function stopSparkles() {
+      // Stop sparkles by removing existing ones
+      const sparkles = document.querySelectorAll('.sparkle');
+      sparkles.forEach(sparkle => sparkle.remove());
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heartbeat Sensor</title>
+</head>
+<body>
+    <h1>Heartbeat Sensor</h1>
+    <button id="connect-btn">Connect to Smartwatch</button>
+    <button id="send-data-btn" disabled>Send Heartbeat Data</button>
+    <div id="log"></div>
+
+    <script>
+        let device;
+        let server;
+        let characteristic;
+
+        // Connect to smartwatch
+        document.getElementById('connect-btn').addEventListener('click', async () => {
+            try {
+                device = await navigator.bluetooth.requestDevice({
+                    filters: [{ name: 'SmartWatch' }],
+                    optionalServices: ['heart_rate_service']
+                });
+                server = await device.gatt.connect();
+                characteristic = await server.getPrimaryService('heart_rate_service').getCharacteristic('heart_rate_measurement');
+                document.getElementById('send-data-btn').disabled = false;
+            } catch (error) {
+                console.error('Connection failed:', error);
+            }
+        });
+
+        // Send heartbeat data
+        document.getElementById('send-data-btn').addEventListener('click', async () => {
+            try {
+                const heartbeat = Math.floor(Math.random() * 100); // Simulated heartbeat data
+                const data = new Uint8Array([heartbeat]);
+                await characteristic.writeValue(data);
+                document.getElementById('log').innerHTML += `Sent heartbeat data: ${heartbeat}\n`;
+            } catch (error) {
+                console.error('Data send failed:', error);
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+ 

@@ -1,0 +1,82 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heartbeat Sensor Seatbelt</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="scene-container"></div>
+    <script src="(link unavailable)"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+CSS (styles.css)
+
+body {
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+#scene-container {
+    width: 100%;
+    height: 600px;
+    border: 1px solid #ccc;
+}
+
+
+JavaScript (script.js)
+
+// Create the scene, camera, and renderer
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({
+    container: document.getElementById('scene-container'),
+    antialias: true
+});
+
+// Create the seatbelt model
+const seatbeltGeometry = new THREE.CylinderGeometry(0.5, 0.5, 10, 32);
+const seatbeltMaterial = new THREE.MeshPhongMaterial({ color: 0x444444 });
+const seatbeltMesh = new THREE.Mesh(seatbeltGeometry, seatbeltMaterial);
+scene.add(seatbeltMesh);
+
+// Create the heartbeat sensor model
+const sensorGeometry = new THREE.SphereGeometry(0.2, 32, 32);
+const sensorMaterial = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
+const sensorMesh = new THREE.Mesh(sensorGeometry, sensorMaterial);
+sensorMesh.position.set(0, 0.5, 5);
+scene.add(sensorMesh);
+
+// Add ambient light
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+
+// Add directional light
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+directionalLight.position.set(5, 5, 5);
+scene.add(directionalLight);
+
+// Animate the scene
+function animate() {
+    requestAnimationFrame(animate);
+    sensorMesh.scale.x = Math.sin(Date.now() * 0.001) * 0.1 + 0.2;
+    sensorMesh.scale.y = Math.sin(Date.now() * 0.001) * 0.1 + 0.2;
+    renderer.render(scene, camera);
+}
+
+animate();
+
+// Resize the renderer on window resize
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+

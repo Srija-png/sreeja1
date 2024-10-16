@@ -1,0 +1,85 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Heartbeat Sensor Dashboard</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+		}
+		.container {
+			width: 80%;
+			margin: 40px auto;
+			text-align: center;
+		}
+		.heartbeat-rhythm {
+			width: 50%;
+			height: 200px;
+			border: 1px solid #ccc;
+			margin-bottom: 20px;
+		}
+		.location-map {
+			width: 50%;
+			height: 200px;
+			border: 1px solid #ccc;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>Heartbeat Sensor Dashboard</h1>
+		<div class="heartbeat-rhythm">
+			<canvas id="heartbeat-chart" width="400" height="200"></canvas>
+		</div>
+		<div class="location-map">
+			<iframe src="(link unavailable)?..." width="400" height="200" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+		</div>
+		<p>Heartbeat Rate: <span id="heartbeat-rate">00</span> bpm</p>
+		<p>Location: <span id="location">...</span></p>
+	</div>
+
+	<script src="(link unavailable)"></script>
+	<script>
+		// Heartbeat rhythm chart
+		const ctx = document.getElementById('heartbeat-chart').getContext('2d');
+		const chart = new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: [],
+				datasets: [{
+					label: 'Heartbeat Rhythm',
+					data: [],
+					backgroundColor: 'rgba(255, 99, 132, 0.2)',
+					borderColor: 'rgba(255, 99, 132, 1)',
+					borderWidth: 1
+				}]
+			},
+			options: {
+				scales: {
+					y: {
+						beginAtZero: true
+					}
+				}
+			}
+		});
+
+		// Simulate heartbeat data
+		setInterval(() => {
+			const heartbeatRate = Math.floor(Math.random() * 100);
+			chart.data.labels.push('');
+			chart.data.datasets[0].data.push(heartbeatRate);
+			chart.update();
+			document.getElementById('heartbeat-rate').innerText = heartbeatRate;
+		}, 1000);
+
+		// Simulate location data
+		setInterval(() => {
+			const location = 'Lat: 37.7749, Long: -122.4194';
+			document.getElementById('location').innerText = location;
+		}, 5000);
+	</script>
+</body>
+</html>
+
+

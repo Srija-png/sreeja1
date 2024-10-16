@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Heart Rate Monitor</title>
+  </head>
+  <body>
+    <h1>Heart Rate Monitor</h1>
+    <button id="connect-button">Connect to Sensor</button>
+    <div id="heart-rate"></div>
+
+    <script>
+      // Get the connect button and heart rate display elements
+      const connectButton = document.getElementById('connect-button');
+      const heartRateDisplay = document.getElementById('heart-rate');
+
+      // Define the UUIDs for the heart rate service and characteristic
+      const heartRateServiceUuid = '0000180d-0000-1000-8000-00805f9b34fb';
+      const heartRateCharacteristicUuid = '00002a37-0000-1000-8000-00805f9b34fb';
+
+      // Define the device and characteristic variables
+      let device;
+      let heartRateCharacteristic;
+
+      // Add an event listener to the connect button
+      connectButton.addEventListener('click', async () => {
+        // Request access to nearby Bluetooth devices
+        try {
+          device = await navigator.bluetooth.requestDevice({
+            filters: [{ services: [heartRateServiceUuid] }]
+          });
+
+          // Connect to the device
+          await device.gatt.connect();
+
+          // Get the heart rate service and characteristic
+          const service = await device.gatt.getPrimaryService(heartRateServiceUuid);
+          heartRateCharacteristic = await service.getCharacteristic(heartRateCharacteristicUuid);
+
+          // Start notifications for the heart rate characteristic
+          await heartRateCharacteristic.startNotifications();
+
+          // Add an event listener to the characteristic
+          heartRateCharacteristic.addEventListener('characteristicvaluechanged', (event) => {
+            // Get the heart rate value from the event
+            const heartRate = event.target.value.getUint8(1);
+
+            // Display the heart rate
+            heartRateDisplay.textContent = `Heart Rate: ${heartRate} BPM`;
+          });
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      });
+    </script>
+  </body>
+</html>
+

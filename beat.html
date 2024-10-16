@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heartbeat Sensor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        
+        .heartbeat-monitor {
+            width: 500px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .heartbeat-rate {
+            font-size: 48px;
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .heartbeat-graph {
+            width: 100%;
+            height: 200px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="heartbeat-monitor">
+        <h2>Heartbeat Sensor</h2>
+        <p>Heartbeat Rate: <span class="heartbeat-rate" id="heartbeat-rate">0</span> bpm</p>
+        <div class="heartbeat-graph" id="heartbeat-graph"></div>
+    </div>
+
+    <script>
+        // Simulated heartbeat data
+        let heartbeatData = [];
+        let heartbeatRate = 0;
+        let intervalId;
+
+        // Function to generate random heartbeat data
+        function generateHeartbeatData() {
+            heartbeatData.push(Math.random() * 10 + 50); // Simulate heartbeat between 50-60 bpm
+            heartbeatRate = Math.round(heartbeatData[heartbeatData.length - 1]);
+            document.getElementById("heartbeat-rate").innerText = heartbeatRate;
+        }
+
+        // Function to draw heartbeat graph
+        function drawHeartbeatGraph() {
+            const graph = document.getElementById("heartbeat-graph");
+            graph.innerHTML = "";
+            heartbeatData.forEach((data, index) => {
+                const barHeight = data * 2; // Scale data to fit graph
+                const bar = document.createElement("div");
+                bar.style.width = "10px";
+                bar.style.height = barHeight + "px";
+                bar.style.backgroundColor = "#66ccff";
+                bar.style.margin = "0 2px";
+                graph.appendChild(bar);
+            });
+        }
+
+        // Start generating heartbeat data and drawing graph
+        intervalId = setInterval(() => {
+            generateHeartbeatData();
+            drawHeartbeatGraph();
+            heartbeatData.shift(); // Limit data points to 50
+            if (heartbeatData.length > 50) {
+                heartbeatData = heartbeatData.slice(1);
+            }
+        }, 1000); // Update every 1 second
+    </script>
+</body>
+</html>
+
+

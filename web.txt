@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Heart Rate Monitor</title>
+	<style>
+		/* Add your CSS styles here */
+	</style>
+</head>
+<body>
+	<h1>Heart Rate Monitor</h1>
+	<div id="heart-rate-container">
+		<h2>Real-time Heart Rate: <span id="heart-rate">0</span> BPM</h2>
+		<canvas id="heart-rate-graph" width="800" height="400"></canvas>
+	</div>
+	<script src="(link unavailable)"></script>
+	<script>
+		// Get the canvas element
+		var ctx = document.getElementById('heart-rate-graph').getContext('2d');
+		
+		// Create a Chart.js line chart
+		var chart = new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: [], // Timestamps
+				datasets: [{
+					label: 'Heart Rate',
+					data: [], // Heart rate values
+					backgroundColor: 'rgba(255, 99, 132, 0.2)',
+					borderColor: 'rgba(255, 99, 132, 1)',
+					borderWidth: 1
+				}]
+			},
+			options: {
+				scales: {
+					y: {
+						beginAtZero: true
+					}
+				}
+			}
+		});
+		
+		// Simulate real-time data (replace with actual data from sensor)
+		setInterval(function() {
+			var heartRate = Math.floor(Math.random() * 100); // Random heart rate value
+			var timestamp = new Date().toLocaleTimeString();
+			
+			// Update the chart
+			chart.data.labels.push(timestamp);
+			chart.data.datasets[0].data.push(heartRate);
+			chart.update();
+			
+			// Update the heart rate display
+			document.getElementById('heart-rate').innerHTML = heartRate;
+		}, 1000); // Update every 1 second
+	</script>
+</body>
+</html>
+
+

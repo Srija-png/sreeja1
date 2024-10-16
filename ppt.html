@@ -1,0 +1,59 @@
+Sub CreateHeartbeatSensorPresentation()
+    ' Declare variables
+    Dim pptApp As Object
+    Dim pptPres As Object
+    Dim pptSlide As Object
+
+    ' Create a new PowerPoint application
+    Set pptApp = CreateObject("PowerPoint.Application")
+    pptApp.Visible = True
+
+    ' Add a new presentation
+    Set pptPres = pptApp.Presentations.Add
+
+    ' Slide 1 - Title Slide
+    Set pptSlide = pptPres.Slides.Add(1, 1) ' 1 = ppLayoutTitle
+    pptSlide.Shapes.Title.TextFrame.TextRange.Text = "Heartbeat Sensor in Seatbelt"
+    pptSlide.Shapes.Placeholders(2).TextFrame.TextRange.Text = "Enhancing Safety with Real-Time Monitoring"
+
+    ' Slide 2 - Introduction
+    Set pptSlide = pptPres.Slides.Add(2, 2) ' 2 = ppLayoutText
+    pptSlide.Shapes.Title.TextFrame.TextRange.Text = "Introduction"
+    pptSlide.Shapes.Placeholders(2).TextFrame.TextRange.Text = _
+        "Heartbeat sensors integrated into seatbelts represent a significant advancement in vehicle safety. " & _
+        "These sensors monitor the driver's heart rate in real-time, providing critical data that can prevent accidents caused by health emergencies."
+
+    ' Slide 3 - How It Works
+    Set pptSlide = pptPres.Slides.Add(3, 2) ' 2 = ppLayoutText
+    pptSlide.Shapes.Title.TextFrame.TextRange.Text = "How It Works"
+    pptSlide.Shapes.Placeholders(2).TextFrame.TextRange.Text = _
+        "1. Sensor Placement: Heartbeat sensors are strategically placed in the seatbelt to ensure constant contact with the driver's chest.\n" & _
+        "2. Data Collection: The sensor collects heart rate data and transmits it to the vehicle's onboard computer.\n" & _
+        "3. Real-Time Monitoring: The system continuously monitors the data for any irregularities.\n" & _
+        "4. Alerts: If an abnormal heart rate is detected, the system alerts the driver and can take preemptive actions such as slowing down the vehicle."
+
+    ' Slide 4 - Benefits
+    Set pptSlide = pptPres.Slides.Add(4, 2) ' 2 = ppLayoutText
+    pptSlide.Shapes.Title.TextFrame.TextRange.Text = "Benefits"
+    pptSlide.Shapes.Placeholders(2).TextFrame.TextRange.Text = _
+        "1. Enhanced Safety: Immediate detection of heart rate anomalies can prevent accidents caused by driver health issues.\n" & _
+        "2. Medical Assistance: In case of a severe issue, the system can alert emergency services with the driver's location.\n" & _
+        "3. Peace of Mind: Drivers can feel more secure knowing their health is being monitored.\n" & _
+        "4. Data Analytics: Long-term data collection can help in understanding the driver's health trends."
+
+    ' Slide 5 - Future Prospects
+    Set pptSlide = pptPres.Slides.Add(5, 2) ' 2 = ppLayoutText
+    pptSlide.Shapes.Title.TextFrame.TextRange.Text = "Future Prospects"
+    pptSlide.Shapes.Placeholders(2).TextFrame.TextRange.Text = _
+        "The integration of heartbeat sensors in seatbelts is just the beginning. Future advancements may include:\n" & _
+        "1. Integration with other health monitoring systems.\n" & _
+        "2. Enhanced predictive analytics to prevent accidents before they happen.\n" & _
+        "3. Broader implementation across various vehicle types and industries."
+
+    ' Cleanup
+    Set pptSlide = Nothing
+    Set pptPres = Nothing
+    Set pptApp = Nothing
+
+    MsgBox "Presentation created successfully!"
+End Sub

@@ -1,0 +1,110 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heartbeat Sensor and Live Location</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            background-image: url('heartbeat-background.jpg'); 
+            background-size: cover;
+            background-position: center;
+        }
+        h1 {
+            color: #333;
+        }
+        .heartbeat {
+            margin: 20px;
+            padding: 20px;
+            border: 2px solid #333;
+            width: 300px;
+            text-align: center;
+            background-color: #f7f7f7; 
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #heartbeat-canvas {
+            width: 100%;
+            height: 100px;
+            background-color: #fff;
+        }
+        .location {
+            margin: 20px;
+            padding: 20px;
+            border: 2px solid #333;
+            width: 300px;
+            text-align: center;
+            background-color: #f7f7f7; 
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Heartbeat Sensor and Live Location</h1>
+    <div class="heartbeat">
+        <h2>Heartbeat Rhythm</h2>
+        <canvas id="heartbeat-canvas"></canvas>
+        <p>Current BPM: <span id="bpm">--</span></p>
+    </div>
+    <div class="location">
+        <h2>Live Location</h2>
+        <p>Latitude: <span id="latitude">--</span></p>
+        <p>Longitude: <span id="longitude">--</span></p>
+    </div>
+    <script>
+        // Simulate Heartbeat Rhythm (for demonstration purposes)
+        const canvas = document.getElementById('heartbeat-canvas');
+        const ctx = canvas.getContext('2d');
+        let bpm = 70; 
+        const bpmElement = document.getElementById('bpm');
+        function drawHeartbeat() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height / 2);
+            let x = 0;
+            const waveHeight = canvas.height / 4;
+            const waveWidth = canvas.width / bpm; 
+            for (x; x < canvas.width; x += waveWidth) {
+                ctx.lineTo(x, canvas.height / 2 - waveHeight);
+                ctx.lineTo(x + waveWidth / 2, canvas.height / 2 + waveHeight);
+                ctx.lineTo(x + waveWidth, canvas.height / 2);
+            }
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+        function simulateHeartbeat() {
+            bpm = 60 + Math.floor(Math.random() * 40); 
+            bpmElement.innerText = bpm;
+            drawHeartbeat();
+        }
+        setInterval(simulateHeartbeat, 1000);
+        
+        const latitudeElement = document.getElementById('latitude');
+        const longitudeElement = document.getElementById('longitude');
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const { latitude, longitude } = position.coords;
+                latitudeElement.innerText = latitude.toFixed(6);
+                longitudeElement.innerText = longitude.toFixed(6);
+            }, (error) => {
+                latitudeElement.innerText = 'Error fetching location';
+                longitudeElement.innerText = 'Error fetching location';
+            });
+        } else {
+            latitudeElement.innerText = 'Geolocation not supported';
+            longitudeElement.innerText = 'Geolocation not supported';
+        }
+    </script>
+</body>
+</html>
+
