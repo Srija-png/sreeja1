@@ -1,4 +1,4 @@
-class student
+class student1
 {
 int id;
 String name;
